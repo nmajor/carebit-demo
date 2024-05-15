@@ -7,7 +7,6 @@ rails generate scaffold Patient \
   first_name:string \
   middle_name:string \
   last_name:string \
-  search_field:string \
   date_of_birth:date \
   sex:string \
   phone_number:string \
