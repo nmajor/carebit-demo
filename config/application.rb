@@ -8,6 +8,10 @@ Bundler.require(*Rails.groups)
 
 module CarebitDemo
   class Application < Rails::Application
+    config.generators do |g|
+      g.api_only = true
+    end
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 
