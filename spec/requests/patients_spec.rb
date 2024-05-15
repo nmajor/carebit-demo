@@ -16,21 +16,30 @@ RSpec.describe "/patients", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Patient. As you add validations to Patient, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
-  }
+  let(:valid_attributes) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 90)
+    }
+  end
 
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
+  let(:invalid_attributes) do
+    {
+      first_name: nil,
+      middle_name: nil,
+      last_name: nil,
+      date_of_birth: nil
+    }
+  end
 
   # This should return the minimal set of values that should be in the headers
   # in order to pass any filters (e.g. authentication) defined in
   # PatientsController, or in your router and rack
   # middleware. Be sure to keep this updated too.
-  let(:valid_headers) {
+  let(:valid_headers) do
     {}
-  }
+  end
 
   describe "GET /index" do
     it "renders a successful response" do
@@ -51,10 +60,10 @@ RSpec.describe "/patients", type: :request do
   describe "POST /create" do
     context "with valid parameters" do
       it "creates a new Patient" do
-        expect {
+        expect do
           post patients_url,
                params: { patient: valid_attributes }, headers: valid_headers, as: :json
-        }.to change(Patient, :count).by(1)
+        end.to change(Patient, :count).by(1)
       end
 
       it "renders a JSON response with the new patient" do
@@ -67,10 +76,10 @@ RSpec.describe "/patients", type: :request do
 
     context "with invalid parameters" do
       it "does not create a new Patient" do
-        expect {
+        expect do
           post patients_url,
                params: { patient: invalid_attributes }, as: :json
-        }.to change(Patient, :count).by(0)
+        end.to change(Patient, :count).by(0)
       end
 
       it "renders a JSON response with errors for the new patient" do
@@ -84,16 +93,22 @@ RSpec.describe "/patients", type: :request do
 
   describe "PATCH /update" do
     context "with valid parameters" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
+      let(:new_attributes) do
+        {
+          first_name: Faker::Name.first_name,
+          middle_name: Faker::Name.middle_name,
+          last_name: Faker::Name.last_name,
+        }
+      end
 
       it "updates the requested patient" do
         patient = Patient.create! valid_attributes
         patch patient_url(patient),
               params: { patient: new_attributes }, headers: valid_headers, as: :json
         patient.reload
-        skip("Add assertions for updated state")
+        expect(patient.first_name).to eq(new_attributes[:first_name])
+        expect(patient.middle_name).to eq(new_attributes[:middle_name])
+        expect(patient.last_name).to eq(new_attributes[:last_name])
       end
 
       it "renders a JSON response with the patient" do
@@ -119,9 +134,9 @@ RSpec.describe "/patients", type: :request do
   describe "DELETE /destroy" do
     it "destroys the requested patient" do
       patient = Patient.create! valid_attributes
-      expect {
+      expect do
         delete patient_url(patient), headers: valid_headers, as: :json
-      }.to change(Patient, :count).by(-1)
+      end.to change(Patient, :count).by(-1)
     end
   end
 end
