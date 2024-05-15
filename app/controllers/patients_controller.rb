@@ -5,6 +5,11 @@ class PatientsController < ApplicationController
   # GET /patients.json
   def index
     @patients = Patient.all
+
+    return unless params[:query].present?
+
+    sql_subquery = 'first_name ILIKE :query OR middle_name ILIKE :query OR last_name ILIKE :query'
+    @patients = @patients.where(sql_subquery, query: "%#{params[:query]}%")
   end
 
   # GET /patients/1

@@ -47,6 +47,16 @@ RSpec.describe "/patients", type: :request do
       get patients_url, headers: valid_headers, as: :json
       expect(response).to be_successful
     end
+
+    it "filters by name with the 'query' query parameter" do
+      patient = FactoryBot.create(:patient, first_name: "John", last_name: "Doe", middle_name: nil)
+      FactoryBot.create(:patient, first_name: "Jane", last_name: "Doe", middle_name: nil)
+
+      get patients_url, params: { query: "John" }, headers: valid_headers, as: :json
+      expect(response).to be_successful
+      expect(JSON.parse(response.body).size).to eq(1)
+      expect(JSON.parse(response.body).first["id"]).to eq(patient.id)
+    end
   end
 
   describe "GET /show" do
@@ -97,7 +107,7 @@ RSpec.describe "/patients", type: :request do
         {
           first_name: Faker::Name.first_name,
           middle_name: Faker::Name.middle_name,
-          last_name: Faker::Name.last_name,
+          last_name: Faker::Name.last_name
         }
       end
 
