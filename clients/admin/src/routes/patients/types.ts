@@ -19,4 +19,5 @@ export type Patient = {
   surgeries: string;
   transportation_needs: string;
   family_medical_history: string;
+  visited_at: string;
 };

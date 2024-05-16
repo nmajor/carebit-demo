@@ -1,8 +1,15 @@
-import { PatientsIndex } from "./patients.index";
+import { PatientPage } from "./:patientId/patient.page";
+import { PatientsLayout } from "./patients.layout";
 
 export const patientsRoutes = [
   {
     path: "/patients",
-    element: <PatientsIndex />,
+    element: <PatientsLayout />,
+    children: [
+      {
+        path: ":patientId",
+        element: <PatientPage />,
+      },
+    ],
   },
 ];

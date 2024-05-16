@@ -9,14 +9,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableCell,
-  TableBody,
-  Table,
-} from "@/components/ui/table";
-import {
   PaginationPrevious,
   PaginationItem,
   PaginationLink,
@@ -26,10 +18,11 @@ import {
 } from "@/components/ui/pagination";
 import { Loader2, Plus, Search } from "lucide-react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
 import { config } from "@/config";
 import { Patient } from "./types";
 import { useEffect, useState } from "react";
+import { PatientsTable } from "./_components/patients-table";
+import { Outlet } from "react-router-dom";
 
 const fetchPatients = async ({ query }: { query: string }) => {
   const { data } = await axios.get(
@@ -46,9 +39,9 @@ const fetchPatients = async ({ query }: { query: string }) => {
   return data;
 };
 
-export function PatientsIndex() {
+export function PatientsLayout() {
   const [searchValue, setSearchValue] = useState("");
-  const { status, data, error, isFetching, refetch, isRefetching } = useQuery<
+  const { status, data, isFetching, refetch, isRefetching } = useQuery<
     Patient[]
   >({
     queryKey: ["patients"],
@@ -59,8 +52,6 @@ export function PatientsIndex() {
   useEffect(() => {
     refetch();
   }, [searchValue]);
-
-  console.log({ status, data, error, isFetching });
 
   return (
     <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -96,61 +87,14 @@ export function PatientsIndex() {
                 Add Patient
               </Button>
             </div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>DOB</TableHead>
-                  <TableHead>Gender</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead className="text-right">Last Visit</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isFetching ? (
-                  <TableRow>
-                    <TableCell>
-                      <Skeleton className="h-4 w-full" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[50px]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[50px]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[50px]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-[50px]" />
-                    </TableCell>
-                    <TableCell className="flex justify-end">
-                      <Skeleton className="h-4 w-[50px]" />
-                    </TableCell>
-                  </TableRow>
-                ) : !data ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center">
-                      No patients found.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  data?.map((patient) => (
-                    <TableRow key={patient.id}>
-                      <TableCell>
-                        {patient.first_name} {patient.last_name}
-                      </TableCell>
-                      <TableCell>{patient.date_of_birth}</TableCell>
-                      <TableCell>{patient.sex}</TableCell>
-                      <TableCell>{patient.phone_number}</TableCell>
-                      <TableCell>{patient.email}</TableCell>
-                      <TableCell className="flex justify-end">-</TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+
+            {status === "error" && (
+              <div className="text-center text-destructive">
+                An error occurred while fetching patients.
+              </div>
+            )}
+
+            <PatientsTable loading={isFetching} patients={data} />
             <div className="mt-4 flex justify-end">
               <Pagination>
                 <PaginationContent>
@@ -176,6 +120,9 @@ export function PatientsIndex() {
             </div>
           </CardContent>
         </Card>
+      </div>
+      <div>
+        <Outlet />
       </div>
     </div>
   );
