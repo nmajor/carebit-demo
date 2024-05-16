@@ -7,7 +7,7 @@ import {
   Search,
   Settings,
   User2,
-  Users2
+  Users2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -35,6 +35,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ModeToggle } from "@/components/mode-toggle";
 
 const navLinks = [
   {
@@ -161,6 +162,7 @@ export default function Root() {
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
+          <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
