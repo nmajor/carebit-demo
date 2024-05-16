@@ -9,7 +9,7 @@ import {
   User2,
   Users2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
 import {
   Breadcrumb,
@@ -36,6 +36,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ModeToggle } from "@/components/mode-toggle";
+import { cn } from "@/lib/utils";
 
 const navLinks = [
   {
@@ -65,7 +66,7 @@ const navLinks = [
   },
 ];
 
-export default function Root() {
+export function RootLayout() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -84,13 +85,21 @@ export default function Root() {
           {navLinks.map((link) => (
             <Tooltip key={link.title}>
               <TooltipTrigger asChild>
-                <Link
-                  to={link.path}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                >
-                  <link.icon className="h-5 w-5" />
-                  <span className="sr-only">{link.title}</span>
-                </Link>
+                <NavLink to={link.path}>
+                  {({ isActive, isPending }) => (
+                    <div
+                      className={cn(
+                        "flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8",
+                        isActive || isPending
+                          ? "text-primary bg-muted"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      <link.icon className="h-5 w-5" />
+                      <span className="sr-only">{link.title}</span>
+                    </div>
+                  )}
+                </NavLink>
               </TooltipTrigger>
               <TooltipContent side="right">{link.title}</TooltipContent>
             </Tooltip>
@@ -184,7 +193,9 @@ export default function Root() {
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3"></main>
+        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
