@@ -21,7 +21,10 @@ export function PatientDeleteButton({ patientId }: { patientId: string }) {
     mutationFn: () => deletePatient({ patientId }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["patients", ["patient", patientId]],
+        queryKey: ["patients"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["patient", patientId],
       });
       navigate("/patients");
     },
