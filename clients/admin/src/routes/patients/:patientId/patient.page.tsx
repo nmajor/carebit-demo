@@ -1,5 +1,3 @@
-import * as React from "react";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,23 +7,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import axios from "axios";
 
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { Patient } from "../types";
-import { config } from "@/config";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link, useParams } from "react-router-dom";
+import { config } from "@/config";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { ChevronLeft, X } from "lucide-react";
 import { titleCase } from "moderndash";
-import { X } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import { Patient } from "../types";
 
 const fetchPatient = async ({ patientId }: { patientId?: string }) => {
   if (!patientId) return undefined;
@@ -78,50 +69,58 @@ export function PatientPage() {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex justify-between">
-          <div>
-            {data.first_name} {data.middle_name} {data.last_name}
-          </div>
-          <Link to="/patients">
-            <Button size="xs" variant="outline">
-              <X className="h-4 w-4" />
-            </Button>
-          </Link>
-        </CardTitle>
-        <CardDescription>{data.sex}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-4">
-          {Object.keys(data).map((key) => {
-            if (
-              [
-                "id",
-                "first_name",
-                "middle_name",
-                "last_name",
-                "created_at",
-                "updated_at",
-                "url",
-              ].includes(key)
-            )
-              return null;
+    <div>
+      <Link to="/patients" className="2xl:hidden">
+        <Button size="xs" variant="link">
+          <ChevronLeft className="" />
+          Back to patients
+        </Button>
+      </Link>
+      <Card className="w-full max-w-5xl">
+        <CardHeader>
+          <CardTitle className="flex justify-between">
+            <div>
+              {data.first_name} {data.middle_name} {data.last_name}
+            </div>
+            <Link to="/patients" className="hidden 2xl:block">
+              <Button size="xs" variant="outline">
+                <X className="h-4 w-4" />
+              </Button>
+            </Link>
+          </CardTitle>
+          <CardDescription>{data.sex}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-4">
+            {Object.keys(data).map((key) => {
+              if (
+                [
+                  "id",
+                  "first_name",
+                  "middle_name",
+                  "last_name",
+                  "created_at",
+                  "updated_at",
+                  "url",
+                ].includes(key)
+              )
+                return null;
 
-            const label = titleCase(key);
-            const value = data[key as keyof Patient];
-            return (
-              <div className="grid gap-1">
-                <Label>{label}</Label>
-                <div className="font-semibold">{value}</div>
-              </div>
-            );
-          })}
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-right">
-        <Button>Deploy</Button>
-      </CardFooter>
-    </Card>
+              const label = titleCase(key);
+              const value = data[key as keyof Patient];
+              return (
+                <div className="grid gap-1">
+                  <Label>{label}</Label>
+                  <div className="font-semibold">{value}</div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-right">
+          <Button>Deploy</Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

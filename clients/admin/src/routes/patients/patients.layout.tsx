@@ -22,7 +22,8 @@ import { config } from "@/config";
 import { Patient } from "./types";
 import { useEffect, useState } from "react";
 import { PatientsTable } from "./_components/patients-table";
-import { Outlet } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 const fetchPatients = async ({ query }: { query: string }) => {
   const { data } = await axios.get(
@@ -40,6 +41,9 @@ const fetchPatients = async ({ query }: { query: string }) => {
 };
 
 export function PatientsLayout() {
+  const { patientId } = useParams();
+  const isChildPage = !!patientId;
+
   const [searchValue, setSearchValue] = useState("");
   const { status, data, isFetching, refetch, isRefetching } = useQuery<
     Patient[]
@@ -54,8 +58,13 @@ export function PatientsLayout() {
   }, [searchValue]);
 
   return (
-    <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-      <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+    <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 grid-cols-2 2xl:grid-cols-3">
+      <div
+        className={cn(
+          "auto-rows-max items-start gap-4 md:gap-8 col-span-2",
+          isChildPage ? "hidden 2xl:grid" : "grid col-span-2"
+        )}
+      >
         <Card className="flex-1">
           <CardHeader>
             <CardTitle>Patient Records</CardTitle>
@@ -121,7 +130,7 @@ export function PatientsLayout() {
           </CardContent>
         </Card>
       </div>
-      <div>
+      <div className="col-span-2 2xl:col-span-1">
         <Outlet />
       </div>
     </div>
