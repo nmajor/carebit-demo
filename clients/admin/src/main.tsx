@@ -6,7 +6,7 @@ import {
 import {
   QueryClient,
   QueryClientProvider,
-} from "react-query";
+} from "@tanstack/react-query";
 import { router } from './router';
 
 import './index.css'

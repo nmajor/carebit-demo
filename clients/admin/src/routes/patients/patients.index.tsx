@@ -24,21 +24,41 @@ import {
   PaginationContent,
   Pagination,
 } from "@/components/ui/pagination";
-import { Plus, Search } from "lucide-react";
-import { useQuery, useQueryClient } from "react-query";
+import { Loader2, Plus, Search } from "lucide-react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { config } from "@/config";
+import { Patient } from "./types";
+import { useEffect, useState } from "react";
 
-export function PatientsIndex() {
-  const { status, data, error, isFetching } = useQuery("posts", async () => {
-    const { data } = await axios.get(`${config.apiUrl}/patients`, {
+const fetchPatients = async ({ query }: { query: string }) => {
+  const { data } = await axios.get(
+    `${config.apiUrl}/patients${
+      query ? `?query=${encodeURIComponent(query)}` : ""
+    }`,
+    {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-    });
-    return data;
+    }
+  );
+  return data;
+};
+
+export function PatientsIndex() {
+  const [searchValue, setSearchValue] = useState("");
+  const { status, data, error, isFetching, refetch, isRefetching } = useQuery<
+    Patient[]
+  >({
+    queryKey: ["patients"],
+    queryFn: () => fetchPatients({ query: searchValue }),
+    placeholderData: keepPreviousData,
   });
+
+  useEffect(() => {
+    refetch();
+  }, [searchValue]);
 
   console.log({ status, data, error, isFetching });
 
@@ -54,13 +74,22 @@ export function PatientsIndex() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between mb-4">
-              <div className="relative w-full max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
-                <Input
-                  className="w-full pl-10 pr-4 py-2 rounded-md bg-white shadow-none dark:bg-gray-950"
-                  placeholder="Search patients..."
-                  type="search"
-                />
+              <div className="flex flex-1 gap-2 items-center">
+                <div className="relative w-full max-w-md">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
+                  <Input
+                    className="w-full pl-10 pr-4 py-2 rounded-md bg-white shadow-none dark:bg-gray-950"
+                    placeholder="Search patients..."
+                    type="search"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                  />
+                </div>
+                {isRefetching ? (
+                  <Loader2 className="h-6 w-6 text-muted-foreground animate-spin" />
+                ) : (
+                  <div className="h-6 w-6" />
+                )}
               </div>
               <Button size="sm">
                 <Plus className="mr-2 h-4 w-4" />
@@ -71,7 +100,7 @@ export function PatientsIndex() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Age</TableHead>
+                  <TableHead>DOB</TableHead>
                   <TableHead>Gender</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Email</TableHead>
@@ -82,7 +111,7 @@ export function PatientsIndex() {
                 {isFetching ? (
                   <TableRow>
                     <TableCell>
-                      <Skeleton className="h-4 w-[50px]" />
+                      <Skeleton className="h-4 w-full" />
                     </TableCell>
                     <TableCell>
                       <Skeleton className="h-4 w-[50px]" />
@@ -100,25 +129,25 @@ export function PatientsIndex() {
                       <Skeleton className="h-4 w-[50px]" />
                     </TableCell>
                   </TableRow>
+                ) : !data ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center">
+                      No patients found.
+                    </TableCell>
+                  </TableRow>
                 ) : (
-                  <>
-                    <TableRow>
-                      <TableCell>John Doe</TableCell>
-                      <TableCell>35</TableCell>
-                      <TableCell>Male</TableCell>
-                      <TableCell>123-456-7890</TableCell>
-                      <TableCell>john@example.com</TableCell>
-                      <TableCell>2023-04-15</TableCell>
+                  data?.map((patient) => (
+                    <TableRow key={patient.id}>
+                      <TableCell>
+                        {patient.first_name} {patient.last_name}
+                      </TableCell>
+                      <TableCell>{patient.date_of_birth}</TableCell>
+                      <TableCell>{patient.sex}</TableCell>
+                      <TableCell>{patient.phone_number}</TableCell>
+                      <TableCell>{patient.email}</TableCell>
+                      <TableCell className="flex justify-end">-</TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell>Jane Smith</TableCell>
-                      <TableCell>42</TableCell>
-                      <TableCell>Female</TableCell>
-                      <TableCell>987-654-3210</TableCell>
-                      <TableCell>jane@example.com</TableCell>
-                      <TableCell>2023-03-28</TableCell>
-                    </TableRow>
-                  </>
+                  ))
                 )}
               </TableBody>
             </Table>
