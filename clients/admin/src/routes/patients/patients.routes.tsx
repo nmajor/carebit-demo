@@ -1,3 +1,4 @@
+import { PatientNewPage } from "./:patientId/new/patient-new.page";
 import { PatientPage } from "./:patientId/patient.page";
 import { PatientsLayout } from "./patients.layout";
 
@@ -9,6 +10,10 @@ export const patientsRoutes = [
       {
         path: ":patientId",
         element: <PatientPage />,
+      },
+      {
+        path: "new",
+        element: <PatientNewPage />,
       },
     ],
   },

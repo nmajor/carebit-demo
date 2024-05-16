@@ -22,7 +22,7 @@ import { config } from "@/config";
 import { Patient } from "./types";
 import { useEffect, useState } from "react";
 import { PatientsTable } from "./_components/patients-table";
-import { Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const fetchPatients = async ({ query }: { query: string }) => {
@@ -42,7 +42,9 @@ const fetchPatients = async ({ query }: { query: string }) => {
 
 export function PatientsLayout() {
   const { patientId } = useParams();
-  const isChildPage = !!patientId;
+  const location = useLocation();
+  const isChildPage =
+    !!patientId || location.pathname.includes("/patients/new");
 
   const [searchValue, setSearchValue] = useState("");
   const { status, data, isFetching, refetch, isRefetching } = useQuery<
@@ -91,10 +93,14 @@ export function PatientsLayout() {
                   <div className="h-6 w-6" />
                 )}
               </div>
-              <Button size="sm">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Patient
-              </Button>
+              <Link to="/patients/new">
+                <Button size="sm">
+                  <Plus className="h-4 w-4" />
+                  <span className="hidden md:inline-block ml-2">
+                    Add Patient
+                  </span>
+                </Button>
+              </Link>
             </div>
 
             {status === "error" && (

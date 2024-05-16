@@ -46,9 +46,6 @@ export function PatientPage() {
           <CardTitle>
             <Skeleton className="h-6 w-1/2" />
           </CardTitle>
-          <CardDescription>
-            <Skeleton className="h-4 w-1/4" />
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Skeleton className="h-4 w-full" />
@@ -104,13 +101,17 @@ export function PatientPage() {
                   "updated_at",
                   "url",
                 ].includes(key)
-              )
+              ) {
                 return null;
+              }
 
               const label = titleCase(key);
               const value = data[key as keyof Patient];
+
+              if (!value) return null;
+
               return (
-                <div className="grid gap-1">
+                <div className="grid gap-1" key={key}>
                   <Label>{label}</Label>
                   <div className="font-semibold">{value}</div>
                 </div>
