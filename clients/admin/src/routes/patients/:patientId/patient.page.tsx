@@ -17,6 +17,7 @@ import { ChevronLeft, X } from "lucide-react";
 import { titleCase } from "moderndash";
 import { Link, useParams } from "react-router-dom";
 import { Patient } from "../types";
+import { PatientDeleteButton } from "./_components/patient-delete-button";
 
 const fetchPatient = async ({ patientId }: { patientId?: string }) => {
   if (!patientId) return undefined;
@@ -117,8 +118,8 @@ export function PatientPage() {
             })}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-right">
-          <Button>Deploy</Button>
+        <CardFooter className="flex justify-end">
+          {patientId && <PatientDeleteButton patientId={patientId} />}
         </CardFooter>
       </Card>
     </div>
