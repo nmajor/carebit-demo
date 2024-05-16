@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   CardTitle,
   CardDescription,
@@ -24,8 +25,23 @@ import {
   Pagination,
 } from "@/components/ui/pagination";
 import { Plus, Search } from "lucide-react";
+import { useQuery, useQueryClient } from "react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+import { config } from "@/config";
 
 export function PatientsIndex() {
+  const { status, data, error, isFetching } = useQuery("posts", async () => {
+    const { data } = await axios.get(`${config.apiUrl}/patients`, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+    return data;
+  });
+
+  console.log({ status, data, error, isFetching });
+
   return (
     <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
@@ -59,50 +75,51 @@ export function PatientsIndex() {
                   <TableHead>Gender</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Last Visit</TableHead>
+                  <TableHead className="text-right">Last Visit</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell>John Doe</TableCell>
-                  <TableCell>35</TableCell>
-                  <TableCell>Male</TableCell>
-                  <TableCell>123-456-7890</TableCell>
-                  <TableCell>john@example.com</TableCell>
-                  <TableCell>2023-04-15</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Jane Smith</TableCell>
-                  <TableCell>42</TableCell>
-                  <TableCell>Female</TableCell>
-                  <TableCell>987-654-3210</TableCell>
-                  <TableCell>jane@example.com</TableCell>
-                  <TableCell>2023-03-28</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Michael Johnson</TableCell>
-                  <TableCell>28</TableCell>
-                  <TableCell>Male</TableCell>
-                  <TableCell>555-123-4567</TableCell>
-                  <TableCell>michael@example.com</TableCell>
-                  <TableCell>2023-05-01</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Emily Davis</TableCell>
-                  <TableCell>31</TableCell>
-                  <TableCell>Female</TableCell>
-                  <TableCell>987-654-3210</TableCell>
-                  <TableCell>emily@example.com</TableCell>
-                  <TableCell>2023-04-20</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>David Wilson</TableCell>
-                  <TableCell>45</TableCell>
-                  <TableCell>Male</TableCell>
-                  <TableCell>123-456-7890</TableCell>
-                  <TableCell>david@example.com</TableCell>
-                  <TableCell>2023-05-05</TableCell>
-                </TableRow>
+                {isFetching ? (
+                  <TableRow>
+                    <TableCell>
+                      <Skeleton className="h-4 w-[50px]" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-[50px]" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-[50px]" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-[50px]" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-[50px]" />
+                    </TableCell>
+                    <TableCell className="flex justify-end">
+                      <Skeleton className="h-4 w-[50px]" />
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  <>
+                    <TableRow>
+                      <TableCell>John Doe</TableCell>
+                      <TableCell>35</TableCell>
+                      <TableCell>Male</TableCell>
+                      <TableCell>123-456-7890</TableCell>
+                      <TableCell>john@example.com</TableCell>
+                      <TableCell>2023-04-15</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Jane Smith</TableCell>
+                      <TableCell>42</TableCell>
+                      <TableCell>Female</TableCell>
+                      <TableCell>987-654-3210</TableCell>
+                      <TableCell>jane@example.com</TableCell>
+                      <TableCell>2023-03-28</TableCell>
+                    </TableRow>
+                  </>
+                )}
               </TableBody>
             </Table>
             <div className="mt-4 flex justify-end">
