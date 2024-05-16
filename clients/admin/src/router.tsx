@@ -4,6 +4,7 @@ import "./index.css";
 import { ErrorPage } from "./components/error-page";
 import { RootPage } from "./routes/root.page";
 import { RootLayout } from "./routes/root.layout";
+import { patientsRoutes } from "./routes/patients/patients.routes";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ export const router = createBrowserRouter([
         element: <RootPage />,
         errorElement: <ErrorPage />,
       },
+      ...patientsRoutes,
     ],
   },
 ]);
