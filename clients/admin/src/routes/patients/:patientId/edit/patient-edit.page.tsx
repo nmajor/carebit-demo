@@ -1,50 +1,38 @@
-import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Patient } from "@/types";
-import { ChevronLeft, Loader2, X } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
-import axios from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { config } from "@/config";
-import { FormEvent } from "react";
-import { toast } from "sonner";
+import {
+  UpdatePatientValues,
+  fetchPatient,
+  updatePatient,
+} from "@/api/patients";
 import { FormError } from "@/components/form-error";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { PhoneInput } from "@/components/ui/phone-input";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-type UpdatePatientValues = {
-  firstName?: string;
-  lastName?: string;
-  middleName?: string;
-  phone?: string;
-  dob?: string;
-  email?: string;
-};
-
-async function updatePatient(patientId: string, values: UpdatePatientValues) {
-  const response = await axios.put(
-    `${config.apiUrl}/patients/${patientId}`,
-    { patient: values },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    }
-  );
-
-  return response.data as Patient;
-}
+import { Patient } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ChevronLeft, Loader2, X } from "lucide-react";
+import { FormEvent } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { PatientLoadingCard } from "../../_components/patient-loading-card";
 
 export function PatientEditPage() {
   const { patientId } = useParams();
+  const {
+    status,
+    data: patient,
+    isFetching,
+  } = useQuery<Patient>({
+    queryKey: ["patient", patientId],
+    queryFn: () => fetchPatient({ patientId }),
+  });
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { mutate, isPending, error } = useMutation({
@@ -67,10 +55,22 @@ export function PatientEditPage() {
     },
   });
 
+  if (isFetching) {
+    return <PatientLoadingCard />;
+  }
+
+  if (status === "error") {
+    return (
+      <Card className="text-destructive">An unexpected error happened.</Card>
+    );
+  }
+
+  if (!patient) {
+    return <Card className="">Record not found</Card>;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const errors = (error as any)?.response?.data;
-
-  console.log("blah hi data", errors);
 
   return (
     <div>

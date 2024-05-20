@@ -1,47 +1,20 @@
-import axios from "axios";
-import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Patient } from "@/types";
-import { ChevronLeft, Loader2, X } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { config } from "@/config";
-import { FormEvent } from "react";
-import { toast } from "sonner";
+import { CreatePatientValues, createPatient } from "@/api/patients";
 import { FormError } from "@/components/form-error";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { PhoneInput } from "@/components/ui/phone-input";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-type CreatePatientValues = {
-  firstName?: string;
-  lastName?: string;
-  middleName?: string;
-  phone?: string;
-  dob?: string;
-  email?: string;
-};
-
-async function createPatient(values: CreatePatientValues) {
-  const response = await axios.post(
-    `${config.apiUrl}/patients`,
-    { patient: values },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    }
-  );
-
-  return response.data as Patient;
-}
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChevronLeft, Loader2, X } from "lucide-react";
+import { FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export function PatientNewPage() {
   const queryClient = useQueryClient();

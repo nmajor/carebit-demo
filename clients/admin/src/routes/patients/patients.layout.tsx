@@ -1,44 +1,28 @@
-import axios from "axios";
-import {
-  CardTitle,
-  CardDescription,
-  CardHeader,
-  CardContent,
-  Card,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { fetchPatients } from "@/api/patients";
 import { Button } from "@/components/ui/button";
 import {
-  PaginationPrevious,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
   PaginationItem,
   PaginationLink,
   PaginationNext,
-  PaginationContent,
-  Pagination,
+  PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Loader2, Plus, Search } from "lucide-react";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { config } from "@/config";
-import { Patient } from "../../types";
-import { useEffect, useState } from "react";
-import { PatientsTable } from "./_components/patients-table";
-import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
-
-const fetchPatients = async ({ query }: { query: string }) => {
-  const { data } = await axios.get(
-    `${config.apiUrl}/patients${
-      query ? `?query=${encodeURIComponent(query)}` : ""
-    }`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    }
-  );
-  return data;
-};
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { Loader2, Plus, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+import { Patient } from "../../types";
+import { PatientsTable } from "./_components/patients-table";
 
 export function PatientsLayout() {
   const { patientId } = useParams();
@@ -109,7 +93,11 @@ export function PatientsLayout() {
               </div>
             )}
 
-            <PatientsTable loading={isFetching} patients={data} selectedId={patientId} />
+            <PatientsTable
+              loading={isFetching}
+              patients={data}
+              selectedId={patientId}
+            />
             <div className="mt-4 flex justify-end">
               <Pagination>
                 <PaginationContent>
