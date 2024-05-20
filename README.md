@@ -1,29 +1,12 @@
-# Notes
+# Get Started
 
-Patient scaffold:
+1. Clone repo
+2. Inside repo root run `bundle install && cd clients/admin && npm install && cd -`
+3. Run `rails db:setup` to create the database and seed it with some data
+4. Run `rails s` in one terminal window and `cd clients/admin && npm run dev` in another
+5. Visit the vite app in the browser
 
-```
-rails generate scaffold Patient \
-  first_name:string \
-  middle_name:string \
-  last_name:string \
-  date_of_birth:date \
-  sex:string \
-  phone_number:string \
-  email:string \
-  emergency_contact_name:string \
-  emergency_contact_phone_number:string \
-  emergency_contact_relationship:string \
-  address:string \
-  preferred_language:string \
-  occupation:string \
-  preexisting_conditions:string \
-  allergies:string \
-  medications:string \
-  surgeries:string \
-  transportation_needs:string \
-  family_medical_history:string
-```
+The main page for creating, viewing, editing, and deleting patients is at `/patients`.
 
 # Project Specs
 
