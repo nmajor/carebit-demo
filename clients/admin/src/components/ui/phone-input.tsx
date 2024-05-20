@@ -62,18 +62,36 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
           {...props}
         />
       );
-    },
+    }
   );
 PhoneInput.displayName = "PhoneInput";
 
 const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, ...props }, ref) => (
-    <Input
-      className={cn("rounded-e-lg rounded-s-none border-l-0", className)}
-      {...props}
-      ref={ref}
-    />
-  ),
+  ({ className, ...props }, ref) => {
+    const internalRef = React.useRef<HTMLInputElement | null>(null);
+
+    // This effect is used to set the default value of the input
+    // Its needed because react-phone-number-input does not support defaultValue
+    React.useEffect(() => {
+      if (props.defaultValue && internalRef.current) {
+        internalRef.current.value = props.defaultValue as string;
+        // @ts-expect-error Need to call onChange to make the defaultValue work, but no arguments are needed
+        props.onChange?.();
+      }
+    }, []);
+
+    return (
+      <Input
+        className={cn("rounded-e-lg rounded-s-none border-l-0", className)}
+        {...props}
+        ref={(input) => {
+          internalRef.current = input;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return (ref as any)?.(input);
+        }}
+      />
+    );
+  }
 );
 InputComponent.displayName = "InputComponent";
 
@@ -96,7 +114,7 @@ const CountrySelect = ({
     (country: RPNInput.Country) => {
       onChange(country);
     },
-    [onChange],
+    [onChange]
   );
 
   return (
@@ -112,7 +130,7 @@ const CountrySelect = ({
           <ChevronsUpDown
             className={cn(
               "-mr-2 h-4 w-4 opacity-50",
-              disabled ? "hidden" : "opacity-100",
+              disabled ? "hidden" : "opacity-100"
             )}
           />
         </Button>
@@ -145,7 +163,7 @@ const CountrySelect = ({
                       <CheckIcon
                         className={cn(
                           "ml-auto h-4 w-4",
-                          option.value === value ? "opacity-100" : "opacity-0",
+                          option.value === value ? "opacity-100" : "opacity-0"
                         )}
                       />
                     </CommandItem>

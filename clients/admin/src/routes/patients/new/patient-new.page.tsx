@@ -1,20 +1,17 @@
 import { CreatePatientValues, createPatient } from "@/api/patients";
-import { FormError } from "@/components/form-error";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { PhoneInput } from "@/components/ui/phone-input";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Loader2, X } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { PatientForm } from "../_components/patient-form";
 
 export function PatientNewPage() {
   const queryClient = useQueryClient();
@@ -67,80 +64,7 @@ export function PatientNewPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form className="grid gap-4" onSubmit={mutate as never}>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="first_name">First Name</Label>
-                <Input name="first_name" id="first_name" placeholder="John" />
-                <FormError errors={errors?.first_name} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="last_name">Last Name</Label>
-                <Input name="last_name" id="last_name" placeholder="Doe" />
-                <FormError errors={errors?.last_name} />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="middleName">Middle Name</Label>
-              <Input name="middle_name" id="middle_name" placeholder="Quincy" />
-              <FormError errors={errors?.middle_name} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="sex">Biological Sex</Label>
-              <div>
-                <select
-                  name="sex"
-                  id="sex"
-                  className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
-                >
-                  <option value="">Select option</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-              <FormError errors={errors?.sex} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="phone_number">Phone Number</Label>
-
-                <PhoneInput
-                  defaultCountry="GB"
-                  type="tel"
-                  name="phone_number"
-                  id="phone_number"
-                  autoComplete="tel"
-                />
-                <FormError errors={errors?.phone_number} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="date_of_birth">Date of Birth</Label>
-                <Input
-                  className="w-auto"
-                  name="date_of_birth"
-                  id="date_of_birth"
-                  type="date"
-                />
-                <FormError errors={errors?.date_of_birth} />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                name="email"
-                id="email"
-                placeholder="john.doe@example.com"
-                type="email"
-              />
-              <FormError errors={errors?.email} />
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button type="submit">
-                {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-                Create Patient
-              </Button>
-            </div>
-          </form>
+          <PatientForm mutate={mutate} errors={errors} isPending={isPending} />
         </CardContent>
       </Card>
     </div>
