@@ -49,6 +49,8 @@ export function PatientPage() {
     return <Card className="">Record not found</Card>;
   }
 
+  console.log("blah hi patient", patient);
+
   return (
     <div>
       <Link to="/patients" className="2xl:hidden">

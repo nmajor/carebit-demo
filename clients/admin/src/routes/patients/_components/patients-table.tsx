@@ -10,6 +10,7 @@ import { Patient } from "../../../types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { dayjs } from "@/lib/dayjs";
 
 export function PatientsTable({
   loading,
@@ -89,7 +90,9 @@ export function PatientsTable({
                 {patient.email}
               </TableCell>
               <TableCell className="flex justify-end">
-                {patient.last_visited_at ?? "Never"}
+                {patient.last_visited_at
+                  ? dayjs(patient.last_visited_at).fromNow()
+                  : "Never"}
               </TableCell>
             </TableRow>
           ))
