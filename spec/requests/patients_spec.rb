@@ -20,7 +20,10 @@ RSpec.describe "/patients", type: :request do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
-      date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 90)
+      date_of_birth: Faker::Date.birthday(min_age: 18, max_age: 90),
+      phone_number: Faker::Base.numerify('+44 7911 ######'),
+      email: Faker::Internet.email,
+      sex: ["male", "female"].sample
     }
   end
 
@@ -40,6 +43,8 @@ RSpec.describe "/patients", type: :request do
   let(:valid_headers) do
     {}
   end
+
+  let(:patients) { FactoryBot.create_list(:patient, 30) }
 
   describe "GET /index" do
     it "renders a successful response" do

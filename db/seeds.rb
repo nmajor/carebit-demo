@@ -1,5 +1,5 @@
 # Seed Patients
-100.times do
+10.times do
   Patient.create!(
     first_name: Faker::Name.first_name,
     middle_name: Faker::Name.middle_name,

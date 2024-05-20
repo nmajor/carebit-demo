@@ -5,7 +5,7 @@ FactoryBot.define do
     last_name { Faker::Name.last_name }
     date_of_birth { Faker::Date.birthday(min_age: 18, max_age: 90) }
     sex { ["male", "female"].sample }
-    phone_number { Faker::PhoneNumber.phone_number }
+    phone_number { Faker::Base.numerify('+44 7911 ######') }
     email { Faker::Internet.email }
     emergency_contact_name { Faker::Name.name }
     emergency_contact_phone_number { Faker::PhoneNumber.phone_number }
