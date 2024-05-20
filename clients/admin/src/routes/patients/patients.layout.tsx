@@ -19,7 +19,7 @@ import {
 import { Loader2, Plus, Search } from "lucide-react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { config } from "@/config";
-import { Patient } from "./types";
+import { Patient } from "../../types";
 import { useEffect, useState } from "react";
 import { PatientsTable } from "./_components/patients-table";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
@@ -109,7 +109,7 @@ export function PatientsLayout() {
               </div>
             )}
 
-            <PatientsTable loading={isFetching} patients={data} />
+            <PatientsTable loading={isFetching} patients={data} selectedId={patientId} />
             <div className="mt-4 flex justify-end">
               <Pagination>
                 <PaginationContent>

@@ -19,5 +19,11 @@ export type Patient = {
   surgeries: string;
   transportation_needs: string;
   family_medical_history: string;
-  visited_at: string;
+  last_visited_at: string;
+  created_at: string;
+  updated_at: string;
 };
+
+export type PatientCreateResponse = {
+  data: Patient & { created_at: string; updated_at: string };
+}

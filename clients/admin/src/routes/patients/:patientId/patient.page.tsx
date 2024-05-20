@@ -16,7 +16,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ChevronLeft, X } from "lucide-react";
 import { titleCase } from "moderndash";
 import { Link, useParams } from "react-router-dom";
-import { Patient } from "../types";
+import { Patient } from "../../../types";
 import { PatientDeleteButton } from "./_components/patient-delete-button";
 
 const fetchPatient = async ({ patientId }: { patientId?: string }) => {

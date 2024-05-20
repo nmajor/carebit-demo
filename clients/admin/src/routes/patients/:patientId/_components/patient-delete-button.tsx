@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { config } from "@/config";
+import { toast } from "sonner";
 
 function deletePatient({ patientId }: { patientId: string }) {
   return axios.delete(`${config.apiUrl}/patients/${patientId}`, {
@@ -27,6 +28,10 @@ export function PatientDeleteButton({ patientId }: { patientId: string }) {
         queryKey: ["patient", patientId],
       });
       navigate("/patients");
+      toast.success("Patient deleted successfully");
+    },
+    onError: () => {
+      toast.error("An error occurred while deleting the patient");
     },
   });
 

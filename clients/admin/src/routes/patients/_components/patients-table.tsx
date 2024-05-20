@@ -6,16 +6,19 @@ import {
   TableBody,
   Table,
 } from "@/components/ui/table";
-import { Patient } from "../types";
+import { Patient } from "../../../types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 export function PatientsTable({
   loading,
   patients,
+  selectedId,
 }: {
   loading: boolean;
   patients?: Patient[];
+  selectedId?: string;
 }) {
   const navigate = useNavigate();
 
@@ -63,10 +66,14 @@ export function PatientsTable({
           patients?.map((patient) => (
             <TableRow
               key={patient.id}
-              className="hover:cursor-pointer"
               onClick={() => {
                 navigate(`/patients/${patient.id}`);
               }}
+              className={cn(
+                selectedId && parseInt(selectedId) === patient.id
+                  ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+                  : "hover:cursor-pointer"
+              )}
             >
               <TableCell>
                 {patient.first_name} {patient.last_name}
@@ -82,7 +89,7 @@ export function PatientsTable({
                 {patient.email}
               </TableCell>
               <TableCell className="flex justify-end">
-                {patient.visited_at ?? "Never"}
+                {patient.last_visited_at ?? "Never"}
               </TableCell>
             </TableRow>
           ))

@@ -1,5 +1,5 @@
 # Seed Patients
-30.times do
+100.times do
   Patient.create!(
     first_name: Faker::Name.first_name,
     middle_name: Faker::Name.middle_name,
@@ -19,6 +19,7 @@
     medications: Faker::Lorem.word,
     surgeries: Faker::Lorem.sentence,
     transportation_needs: Faker::Lorem.sentence,
-    family_medical_history: Faker::Lorem.sentence
+    family_medical_history: Faker::Lorem.sentence,
+    last_visited_at: [nil, Faker::Date.between(from: 1.year.ago, to: Date.today)].sample
   )
 end

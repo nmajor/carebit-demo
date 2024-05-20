@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_15_141905) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_20_095312) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -36,6 +36,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_15_141905) do
     t.string "family_medical_history"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "last_visited_at"
     t.index ["date_of_birth"], name: "index_patients_on_date_of_birth"
     t.index ["email"], name: "index_patients_on_email", unique: true
     t.index ["first_name"], name: "index_patients_on_first_name"
