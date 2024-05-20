@@ -1,17 +1,11 @@
-import {
-  CardTitle,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  Card,
-} from "@/components/ui/card";
+import axios from "axios";
+import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Patient } from "@/types";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { config } from "@/config";
@@ -19,8 +13,13 @@ import { FormEvent } from "react";
 import { toast } from "sonner";
 import { FormError } from "@/components/form-error";
 import { PhoneInput } from "@/components/ui/phone-input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-type NewPatientValues = {
+type CreatePatientValues = {
   firstName?: string;
   lastName?: string;
   middleName?: string;
@@ -29,7 +28,7 @@ type NewPatientValues = {
   email?: string;
 };
 
-async function createPatient(values: NewPatientValues) {
+async function createPatient(values: CreatePatientValues) {
   const response = await axios.post(
     `${config.apiUrl}/patients`,
     { patient: values },
@@ -53,7 +52,7 @@ export function PatientNewPage() {
       e.preventDefault();
 
       const data = new FormData(e.target as HTMLFormElement);
-      const values = Object.fromEntries(data.entries()) as NewPatientValues;
+      const values = Object.fromEntries(data.entries()) as CreatePatientValues;
       return createPatient(values);
     },
     onSuccess: (patient) => {
@@ -68,8 +67,6 @@ export function PatientNewPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const errors = (error as any)?.response?.data;
 
-  console.log("blah hi data", errors);
-
   return (
     <div>
       <Link to="/patients" className="2xl:hidden">
@@ -78,12 +75,26 @@ export function PatientNewPage() {
           Back to patients
         </Button>
       </Link>
-      <form className="grid gap-4" onSubmit={mutate as never}>
-        <Card className="w-full max-w-5xl">
-          <CardHeader>
-            <CardTitle>New Patient</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <Card className="w-full max-w-5xl">
+        <CardHeader>
+          <CardTitle className="flex justify-between">
+            <div>New Patient</div>
+            <div className="flex gap-4">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link to="/patients" className="hidden 2xl:block">
+                    <Button size="xs" variant="outline">
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="top">Close Form</TooltipContent>
+              </Tooltip>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <form className="grid gap-4" onSubmit={mutate as never}>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="first_name">First Name</Label>
@@ -120,12 +131,6 @@ export function PatientNewPage() {
               <div className="space-y-2">
                 <Label htmlFor="phone_number">Phone Number</Label>
 
-                {/* <Input
-                  name="phone_number"
-                  id="phone_number"
-                  placeholder="(123) 456-7890"
-                  type="text"
-                /> */}
                 <PhoneInput
                   defaultCountry="GB"
                   type="tel"
@@ -156,15 +161,15 @@ export function PatientNewPage() {
               />
               <FormError errors={errors?.email} />
             </div>
-          </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button type="submit">
-              {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-              Create Patient
-            </Button>
-          </CardFooter>
-        </Card>
-      </form>
+            <div className="mt-4 flex justify-end">
+              <Button type="submit">
+                {isPending && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
+                Create Patient
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
